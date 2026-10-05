@@ -65,7 +65,7 @@ Tudo fica em `config/portfolio.php`:
 - `skills` e `tech_icons` — seção de stack
 - `patterns` — padrões de projeto e em quais repositórios aparecem
 - `timeline` — linha do tempo
-- `projects` — cada projeto com `slug`, `repo`, `language`, `category`, `summary`, `description`, `stack` e, opcionalmente, `highlights`, `endpoints`, `flow`, `featured` e `team`
+- `projects` — cada projeto com `slug`, `repo`, `language`, `category`, `summary`, `description`, `stack` e, opcionalmente, `highlights`, `endpoints` (+ `endpoints_title`), `flow` (+ `flow_title`), `featured` e `team`
 
 ## Testes
 

@@ -49,7 +49,7 @@
 
             {{-- Terminal --}}
             <div class="reveal relative" style="--delay: 200ms">
-                <div class="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-violet-600/25 via-fuchsia-500/10 to-cyan-400/25 blur-2xl"></div>
+                <div class="absolute -inset-2 -z-10 rounded-[2rem] sm:-inset-6 bg-gradient-to-br from-violet-600/25 via-fuchsia-500/10 to-cyan-400/25 blur-2xl"></div>
 
                 <img src="{{ $profile['avatar'] }}" alt="Foto de {{ $profile['name'] }}" width="96" height="96"
                      class="absolute -right-3 -top-10 z-10 size-24 rounded-2xl border-4 border-page bg-card-strong object-cover shadow-2xl ring-2 ring-violet-500/60 sm:-right-6 floaty"
@@ -153,7 +153,7 @@
                         @foreach ($items as $tech)
                             <li class="inline-flex items-center gap-2 rounded-xl border border-line bg-page/40 px-3 py-2 text-sm transition hover:-translate-y-0.5 hover:border-line-strong">
                                 @isset($techIcons[$tech])
-                                    <img src="{{ asset('images/tech/'.$techIcons[$tech]) }}" alt="" class="size-4 {{ in_array($tech, ['Express', 'Next.js', 'Django', 'MySQL']) ? 'dark:brightness-0 dark:invert' : '' }}" loading="lazy" width="16" height="16">
+                                    <img src="{{ asset('images/tech/'.$techIcons[$tech]) }}" alt="" class="size-4 {{ match (true) { $tech === 'Next.js' => 'dark:invert', in_array($tech, ['Express', 'Django', 'MySQL']) => 'dark:brightness-0 dark:invert', default => '' } }}" loading="lazy" width="16" height="16">
                                 @else
                                     <span class="size-1.5 rounded-full bg-gradient-to-br from-violet-400 to-cyan-400"></span>
                                 @endisset
@@ -249,11 +249,11 @@
 
                     @if ($loop->first && $project['flow'])
                         <div class="mt-8 rounded-2xl border border-line bg-page/40 p-4">
-                            <p class="mb-3 font-mono text-[11px] uppercase tracking-widest text-subtle">Fluxo da requisição</p>
+                            <p class="mb-3 font-mono text-[11px] uppercase tracking-widest text-subtle">{{ $project['flow_title'] }}</p>
                             <ol class="flex flex-wrap items-center gap-1.5 font-mono text-[11px]">
                                 @foreach ($project['flow'] as [$layer])
                                     <li class="flex items-center gap-1.5">
-                                        <span class="rounded-md border border-line bg-card px-2 py-1 text-fg">{{ $layer }}</span>
+                                        <span class="rounded-md border border-line bg-card px-2 py-1 text-fg [overflow-wrap:anywhere]">{{ $layer }}</span>
                                         @unless ($loop->last)
                                             <x-icon name="arrow-right" class="size-3 text-violet-500" />
                                         @endunless

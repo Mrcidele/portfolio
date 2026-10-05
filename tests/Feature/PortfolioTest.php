@@ -40,6 +40,22 @@ class PortfolioTest extends TestCase
             ->assertSee('https://github.com/Mrcidele/delivery_api_facul', false);
     }
 
+    public function test_project_page_uses_custom_section_titles(): void
+    {
+        $this->get('/projetos/seatlock')
+            ->assertOk()
+            ->assertSee('Fluxo de compra')
+            ->assertSee('/api/v1/trips/{trip}/locks');
+
+        $this->get('/projetos/forja')
+            ->assertOk()
+            ->assertSee('Endpoints da app de demonstração');
+
+        $this->get('/projetos/tenantly')
+            ->assertOk()
+            ->assertSee('Provisionamento do banco');
+    }
+
     public function test_every_project_page_is_reachable(): void
     {
         foreach (config('portfolio.projects') as $project) {

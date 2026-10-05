@@ -39,7 +39,7 @@
         </header>
 
         <div class="mt-16 grid gap-6 lg:grid-cols-[1fr_320px]">
-            <div class="space-y-6">
+            <div class="min-w-0 space-y-6">
                 {{-- Sobre o projeto --}}
                 <section class="reveal rounded-2xl border border-line bg-card p-6 backdrop-blur-sm sm:p-8">
                     <h2 class="font-mono text-xs uppercase tracking-widest text-subtle">Sobre o projeto</h2>
@@ -64,13 +64,13 @@
                 {{-- Fluxo da arquitetura --}}
                 @if ($project['flow'])
                     <section class="reveal rounded-2xl border border-line bg-card p-6 backdrop-blur-sm sm:p-8">
-                        <h2 class="font-mono text-xs uppercase tracking-widest text-subtle">Fluxo de uma requisição</h2>
+                        <h2 class="font-mono text-xs uppercase tracking-widest text-subtle">{{ $project['flow_title'] }}</h2>
                         <ol class="mt-5 space-y-2">
                             @foreach ($project['flow'] as [$layer, $role])
                                 <li class="flex items-center gap-4">
                                     <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-400/20 font-mono text-xs text-violet-600 ring-1 ring-inset ring-violet-500/20 dark:text-violet-300">{{ $loop->iteration }}</span>
-                                    <div class="flex flex-1 flex-wrap items-baseline justify-between gap-x-4 rounded-xl border border-line bg-page/40 px-4 py-3">
-                                        <code class="font-mono text-sm text-fg">{{ $layer }}</code>
+                                    <div class="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-4 rounded-xl border border-line bg-page/40 px-4 py-3">
+                                        <code class="font-mono text-sm text-fg [overflow-wrap:anywhere]">{{ $layer }}</code>
                                         <span class="text-sm text-subtle">{{ $role }}</span>
                                     </div>
                                 </li>
@@ -82,7 +82,7 @@
                 {{-- Endpoints --}}
                 @if ($project['endpoints'])
                     <section class="reveal overflow-hidden rounded-2xl border border-line bg-card backdrop-blur-sm">
-                        <h2 class="px-6 pt-6 font-mono text-xs uppercase tracking-widest text-subtle sm:px-8 sm:pt-8">Endpoints</h2>
+                        <h2 class="px-6 pt-6 font-mono text-xs uppercase tracking-widest text-subtle sm:px-8 sm:pt-8">{{ $project['endpoints_title'] }}</h2>
                         <ul class="mt-5 divide-y divide-line border-t border-line">
                             @foreach ($project['endpoints'] as [$method, $path, $info])
                                 <li class="flex flex-wrap items-center gap-x-4 gap-y-1 px-6 py-3.5 sm:px-8">
@@ -93,7 +93,7 @@
                                         'bg-amber-500/10 text-amber-600 dark:text-amber-400' => $method === 'PUT',
                                         'bg-rose-500/10 text-rose-600 dark:text-rose-400' => $method === 'DELETE',
                                     ])>{{ $method }}</span>
-                                    <code class="font-mono text-sm text-fg">{{ $path }}</code>
+                                    <code class="font-mono text-sm text-fg [overflow-wrap:anywhere]">{{ $path }}</code>
                                     <span class="text-sm text-subtle sm:ml-auto">{{ $info }}</span>
                                 </li>
                             @endforeach
