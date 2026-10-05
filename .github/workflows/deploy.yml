@@ -1,0 +1,75 @@
+name: Deploy no GitHub Pages
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci
+
+      - name: Preparar ambiente
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Compilar assets
+        run: npm run build
+
+      - name: Rodar testes
+        run: php artisan test
+
+      # Daqui para baixo só roda na branch padrão do repositório.
+      - name: Configurar GitHub Pages
+        id: pages
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/configure-pages@v6
+
+      - name: Gerar site estático
+        if: steps.pages.outcome == 'success'
+        run: php artisan portfolio:export --base-url="${{ steps.pages.outputs.base_url }}"
+
+      - name: Enviar site
+        if: steps.pages.outcome == 'success'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v5

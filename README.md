@@ -11,6 +11,7 @@ Portfólio pessoal construído com **Laravel 13**, **Blade** e **Tailwind CSS 4*
 - Tema claro/escuro com preferência salva no navegador
 - Layout responsivo, animações respeitando `prefers-reduced-motion` e página 404 personalizada
 - Não depende de banco de dados
+- Exportação para site estático e deploy automático no GitHub Pages
 
 ## Tecnologias
 
@@ -26,6 +27,7 @@ Portfólio pessoal construído com **Laravel 13**, **Blade** e **Tailwind CSS 4*
 
 ```text
 app/
+├── Console/Commands/ExportStaticSite.php      ← gera o site estático (portfolio:export)
 ├── Http/Controllers/PortfolioController.php   ← home e detalhes do projeto
 └── Services/PortfolioService.php              ← leitura e organização dos dados
 config/portfolio.php                           ← todo o conteúdo do portfólio
@@ -70,3 +72,18 @@ Tudo fica em `config/portfolio.php`:
 ```bash
 php artisan test
 ```
+
+## Publicação no GitHub Pages
+
+O GitHub Pages só serve arquivos estáticos, então o comando `portfolio:export` usa o próprio Laravel para renderizar todas as páginas em HTML e copia os assets de `public/`:
+
+```bash
+npm run build
+php artisan portfolio:export --base-url=https://mrcidele.github.io/portfolio
+```
+
+O site gerado fica em `dist/` (ignorado pelo Git), com `index.html`, uma pasta por projeto em `projetos/` e um `404.html`.
+
+O workflow `.github/workflows/deploy.yml` faz isso automaticamente: a cada push ele instala as dependências, compila os assets e roda os testes; quando o push é na branch padrão do repositório, também gera o site e publica no GitHub Pages.
+
+Configuração única no GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.

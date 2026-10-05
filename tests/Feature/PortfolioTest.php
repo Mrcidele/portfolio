@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Filesystem\Filesystem;
 use Tests\TestCase;
 
 class PortfolioTest extends TestCase
@@ -68,5 +69,29 @@ class PortfolioTest extends TestCase
             $this->assertArrayHasKey($project['category'], config('portfolio.categories'));
             $this->assertArrayHasKey($project['language'], config('portfolio.languages'));
         }
+    }
+
+    public function test_export_generates_static_site(): void
+    {
+        $output = storage_path('framework/testing/export');
+
+        $this->artisan('portfolio:export', ['--output' => $output, '--base-url' => 'https://exemplo.test/portfolio'])
+            ->assertSuccessful();
+
+        $this->assertFileExists("{$output}/index.html");
+        $this->assertFileExists("{$output}/404.html");
+        $this->assertFileExists("{$output}/favicon.svg");
+        $this->assertFileExists("{$output}/build/manifest.json");
+        $this->assertFileDoesNotExist("{$output}/index.php");
+
+        foreach (config('portfolio.projects') as $project) {
+            $this->assertFileExists("{$output}/projetos/{$project['slug']}/index.html");
+        }
+
+        $home = file_get_contents("{$output}/index.html");
+        $this->assertStringContainsString('https://exemplo.test/portfolio/projetos/api-delivery-laravel', $home);
+        $this->assertStringContainsString('https://exemplo.test/portfolio/build/assets/', $home);
+
+        (new Filesystem)->deleteDirectory($output);
     }
 }
